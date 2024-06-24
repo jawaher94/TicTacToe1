@@ -1,0 +1,42 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionListener;
+
+class Instructions extends JFrame {
+
+    public Instructions(ActionListener startGameListener) {
+        setTitle("Instructions");
+        setSize(800, 800);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+
+        JTextArea instructionsText = new JTextArea();
+        instructionsText.setText("Welcome to the game of X and O!\n\n" +
+                "The rules:\n" +
+                "1. Player 1 plays with 'X' and player 2 plays with 'O'.\n" +
+                "2. Players take turns placing their marks in one of the nine squares.\n" +
+                "3. The goal is to get three of the same sign in a row (horizontal, vertical, or diagonal).\n\n" +
+                "You have 30 seconds to play and then the game is over.\n"+
+                "\n"+
+                "Good luck!");
+        instructionsText.setWrapStyleWord(true);
+        instructionsText.setLineWrap(true);
+        instructionsText.setEditable(false);
+        instructionsText.setFont(new Font("Arial", Font.ITALIC, 35));
+        add(instructionsText, BorderLayout.CENTER);
+        instructionsText.setBackground(Color.green);
+        instructionsText.setForeground(Color.BLACK);
+
+        JButton startButton = new JButton("Start");
+        startButton.setFont(new Font("Arial", Font.BOLD, 30));
+        startButton.addActionListener(e -> {
+            dispose(); // Close the instructions window
+            startGameListener.actionPerformed(e); // Notify the listener to start the game
+        });
+        add(startButton, BorderLayout.SOUTH);
+    }
+}
+
+
+
+
