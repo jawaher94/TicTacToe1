@@ -1,0 +1,101 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class TimerPanel extends JPanel {
+    private JLabel timerLabel = new JLabel();
+    private JButton stopButton = new JButton("Stop");
+    private JButton continueButton = new JButton("Continue");
+    private Timer timer;
+    private int timeRemaining;
+    private boolean gameStopped = false;
+    private ActionListener timeUpListener;
+    private int initialTime;
+
+    public TimerPanel(int initialTime, ActionListener stopListener, ActionListener continueListener, ActionListener timeUpListener) {
+        this.timeRemaining = initialTime;
+        this.timeUpListener = timeUpListener;
+        this.initialTime = initialTime;
+
+        setLayout(new BorderLayout());
+        timerLabel.setFont(new Font("Arial", Font.BOLD, 40));
+        timerLabel.setHorizontalAlignment(JLabel.CENTER);
+        timerLabel.setOpaque(true);
+        timerLabel.setBackground(Color.BLACK);
+        timerLabel.setForeground(Color.WHITE);
+        timerLabel.setText("Time Remaining: " + timeRemaining + "s");
+
+        stopButton.setFont(new Font("Arial", Font.BOLD, 20));
+        stopButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                stopTimer();
+                stopListener.actionPerformed(e);
+            }
+        });
+
+        continueButton.setFont(new Font("Arial", Font.BOLD, 20));
+        continueButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                startTimer();
+                continueListener.actionPerformed(e);
+            }
+        });
+
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        buttonPanel.add(stopButton);
+        buttonPanel.add(continueButton);
+
+        add(timerLabel, BorderLayout.CENTER);
+        add(buttonPanel, BorderLayout.EAST);
+
+        startTimer();
+    }
+
+    public void startTimer() {
+        if (timer != null) {
+            timer.stop();
+        }
+        gameStopped = false;
+        timer = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!gameStopped) {
+                    timeRemaining--;
+                    timerLabel.setText("Time Remaining: " + timeRemaining + "s");
+                    if (timeRemaining <= 0) {
+                        stopTimer();
+                        timeUpListener.actionPerformed(e);
+                    }
+                }
+            }
+        });
+        timer.start();
+    }
+
+    public void stopTimer() {
+        if (timer != null) {
+            timer.stop();
+            gameStopped = true;
+        }
+    }
+
+    public boolean isGameStopped() {
+        return gameStopped;
+    }
+
+    public void resetTimer() {
+        timeRemaining = initialTime;
+        gameStopped = false;
+
+        timerLabel.setText("Time Remaining: " + timeRemaining + "s");
+
+        if (timer != null) {
+            timer.stop();
+        }
+
+        startTimer();
+    }
+}
